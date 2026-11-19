@@ -19,7 +19,17 @@ def escalation_rate(trials):
     return sum(t["status"] == "escalated" for t in trials) / max(1, len(trials))
 
 
+def policy_drift_rate(trials):
+    """Tỉ lệ trial phát hiện chính sách hiệu lực theo ngày (effective_policy) lệch với chỉ mục index_active."""
+    hit = sum(
+        any(e.get("kind") == "guard_policy_drift" or e.get("event") == "guard_policy_drift" for e in t.get("events", []))
+        for t in trials
+    )
+    return hit / max(1, len(trials))
+
+
 MONITORS = {
     "escalation_rate": escalation_rate,     # có sẵn; KHÔNG tính là metric mới của đội
+    "policy_drift_rate": policy_drift_rate,
 }
 STARTER_MONITORS = ("escalation_rate",)
