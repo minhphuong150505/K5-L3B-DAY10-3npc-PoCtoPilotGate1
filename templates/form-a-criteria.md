@@ -48,12 +48,12 @@ trợ lý có đang gây thiệt hại cho bên ngoài LogiX không; không có 
 
 | | Offline, cho MỘT bước (câu 1.3) | Telemetry production (câu 1.4) |
 |---|---|---|
-| **Bước / hành vi được đo** | | |
-| **Thước đo** (một câu, có đơn vị) | | |
-| **Dữ liệu** (lấy ở đâu, bao nhiêu, ai gán nhãn) | | |
-| **Cách tính** (công thức, mẫu số, cách xử lý ca thiếu dữ liệu) | | |
+| **Bước / hành vi được đo** | Ghi lỗi cho hãng vận chuyển (`file_carrier_fault`) | |
+| **Thước đo** (một câu, có đơn vị) | Tỉ lệ lần chạy ghi đúng danh sách lỗi hãng theo chính sách và tracking DB (%) | |
+| **Dữ liệu** (lấy ở đâu, bao nhiêu, ai gán nhãn) | 22 ticket × 5 seed bộ nền (`data/tickets.jsonl`), đối chiếu `data/world.json` (`orders`, `policies`); nhãn chuẩn `label.faults` | |
+| **Cách tính** (công thức, mẫu số, cách xử lý ca thiếu dữ liệu) | Số lần chạy có tập lỗi ghi nhận khớp 100% `label.faults` / tổng số lần chạy; ca dừng do `escalated` trước khi ghi lỗi được tách khỏi mẫu số và đếm riêng | |
 | **Khung thời gian / ngưỡng báo động** | (không áp dụng) | |
-| **Điểm mù** (thước đo này KHÔNG thấy gì) | | |
+| **Điểm mù** (thước đo này KHÔNG thấy gì) | Không phát hiện được trường hợp `delay_cause` trong tracking DB bị nhập sai từ kho, hoặc lỗi ở nội dung tin nhắn `notify_carrier` | |
 
 **Ví dụ mẫu (bước "chọn độ trễ" của agent, đừng chép):**
 Thước đo: tỉ lệ lần chạy mà độ trễ agent dùng để tính tiền khác độ trễ theo tracking DB. Dữ liệu: sự kiện `proposal.delay_days_used`
