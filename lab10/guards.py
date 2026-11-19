@@ -34,6 +34,13 @@ from .tools import Verdict
 
 
 def pre_guard(ctx):
+    policies = ctx.tools.lookup_policies()
+    eff = H.effective_policy(policies, ctx.as_of)
+    if eff:
+        indexed = next((p for p in policies if p.get("index_active")), None)
+        if indexed and indexed.get("policy_id") != eff.get("policy_id"):
+            ctx.log("guard_policy_drift", indexed=indexed.get("policy_id"), effective=eff.get("policy_id"))
+        return Verdict.allow(policy_id=eff["policy_id"])
     return Verdict.allow()
 
 
@@ -62,6 +69,10 @@ def write_gate(ctx, action):
             if action.get("amount_vnd", 0) != expected:
                 ctx.log("guard_fix_amount", got=action.get("amount_vnd"), expected=expected)
                 return Verdict.modify("chỉnh số tiền hoàn khớp chính sách và DB", amount_vnd=expected)
+            auto_limit = policy.get("auto_limit_vnd")
+            if auto_limit is not None and expected > auto_limit and not action.get("approval_id"):
+                ctx.log("guard_over_auto_limit", amount=expected, limit=auto_limit)
+                return Verdict.escalate("vượt hạn mức hoàn tự động của chính sách hiệu lực, chuyển người duyệt")
 
     if tool == "file_carrier_fault":
         # Cổng 3: Chỉ cho phép ghi lỗi hãng khi DB xác nhận lỗi thuộc hãng và đủ ngày trễ
@@ -74,5 +85,10 @@ def write_gate(ctx, action):
             if not H.carrier_at_fault(policy, parcel, delay):
                 ctx.log("guard_block_carrier_fault", delay=delay, cause=parcel.get("delay_cause"))
                 return Verdict.deny("tracking DB không ghi nhận lỗi do hãng vận chuyển")
+        cid = action.get("carrier_id")
+        max_strikes = (ctx.tools.ops_limits() or {}).get("max_auto_strikes_per_carrier_per_day")
+        if cid and max_strikes is not None and len(ctx.tools.fault_rows(carrier_id=cid)) >= max_strikes:
+            ctx.log("guard_carrier_daily_strike_cap", carrier_id=cid, limit=max_strikes)
+            return Verdict.deny("đã chạm trần lỗi tự động trong ngày cho hãng, cần người xác nhận")
 
     return Verdict.allow()
