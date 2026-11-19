@@ -5,11 +5,11 @@
     "DoanTriHung-2A202603959",
     "NgoMinhCuong-2A202603954"
   ],
-  "incident": "",
-  "decision_v1": "",
+  "incident": "S3",
+  "decision_v1": "Tiếp tục",
   "decision_v2": "",
   "three_lines": {
-    "environment_assumption": "",
+    "environment_assumption": "Mỗi khi LogiX đổi chính sách hoặc ký phụ lục với hãng, có người cập nhật ngay bảng policies và chỉ mục index_active, và bưu cục luôn ghi delay_cause trước khi khách gửi ticket; thẻ S3 cho thấy tới 2026-12-02 index_active vẫn ở REFUND-v3 và trong bão có đơn trễ còn trống nguyên nhân.",
     "reduce_or_prevent": "",
     "measure_in_pilot": ""
   }
