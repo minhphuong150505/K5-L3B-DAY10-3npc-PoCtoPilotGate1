@@ -7,18 +7,25 @@
     "roi_min": 0.2
   },
   "operations": {
-    "pic": "",
-    "approver_id": "",
+    "pic": "NV-TUNG",
+    "approver_id": "NV-HANH",
     "reviewers_on_shift": 1,
-    "review_capacity_per_hour": null,
-    "max_queue_wait_minutes": null,
-    "stop_conditions": [],
-    "alert_channel": "",
+    "review_capacity_per_hour": 6,
+    "max_queue_wait_minutes": 45,
+    "stop_conditions": [
+      "Khi có 1 lỗi ghi oan cho hãng (lỗi hãng oan >= 1) thì NV-TUNG tắt file_carrier_fault và notify_carrier trong config/switches.json trong 15 phút",
+      "Khi có 1 lần lộ dữ liệu cá nhân cho bên thứ ba (lộ PII >= 1) thì NV-TUNG tắt notify_carrier ngay, báo NV-OANH liên hệ hãng xoá dữ liệu",
+      "Khi tổng hoàn tự động trong ngày chạm ngân sách Finance 2.000.000đ hoặc có tiền hoàn sai vượt ngưỡng đã ký thì NV-TUNG tắt issue_refund, mọi khoản chuyển NV-HANH duyệt",
+      "Khi có ca chờ người duyệt quá 45 phút hoặc có 1 ca bị ùn (quá hạn 60 phút) thì gọi thêm người trực; còn ùn sau 30 phút thì thu hẹp business.pilot_scope",
+      "Khi cùng một hãng bị ghi 2 lỗi tự động trong ngày thì lỗi thứ 3 trở đi chuyển NV-HANH duyệt; GHSH và DNB khoá ghi lỗi tự động nếu đã có 2 lỗi trong 7 ngày",
+      "Dừng hẳn trợ lý (tắt cả bốn công tắc) khi trong một ngày có từ 2 tín hiệu ĐỎ pháp lý, hoặc một tín hiệu ĐỎ tái diễn sau khi đã sửa"
+    ],
+    "alert_channel": "#logix-refund-pilot-alerts",
     "decision_note": false,
     "review_sampling_pct": 0
   },
   "legal": {
-    "pii_fields_blocked_to_third_party": [],
-    "carrier_fault_requires_recorded_cause": false
+    "pii_fields_blocked_to_third_party": ["recipient_contact", "customer_note", "name", "phone", "street", "recipient"],
+    "carrier_fault_requires_recorded_cause": true
   }
 }
