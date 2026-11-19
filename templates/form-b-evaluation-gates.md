@@ -31,7 +31,7 @@ Mọi con số trong quyết định Gate 1 phải trỏ về một dòng ở đ
 |---|---|---|---|---|---|---|---|---|
 | 1 | `R-base-before-20261119-154409-daff31` | base · base | (baseline, chưa có cổng) | 0.9909 ([0.9727, 1.0]) | 0.9545 | 20000đ · 1 · 0 | 0.2273 | Đạt pass_rate/pass_k/kinh doanh, nhưng trượt `wrongful_refund_vnd` (20.000đ) và `wrongful_carrier_faults` (1) do ca `T-002@55`. |
 | 2 | `R-base-after-20261119-154724-daff31` | base · after | (cổng vòng 1, thử trước khi chốt) | 1.0 ([1.0, 1.0]) | 1.0 | 0đ · 0 · 0 | 0.2273 | Đạt 110/110 lượt (`pass_k = 1.0`), hoàn sai = 0đ, lỗi hãng oan = 0, không hỏng ca cũ. |
-| 3 | | base · prepared | (cổng vòng 1 đã chốt) | | | | | |
+| 3 | `R-base-prepared-20261119-155931-daff31` | base · prepared | (cổng vòng 1 đã chốt) | 1.0 ([1.0, 1.0]) | 1.0 | 0đ · 0 · 0 | 0.2273 | Đạt 100% tiêu chí đã ký (`[ĐẠT ]` toàn bộ 5 ngưỡng bắt buộc và 3 ngưỡng kinh doanh/vận hành), sẵn sàng cho v1. |
 | 4 | | | | | | | | |
 
 ---
@@ -212,15 +212,15 @@ Trạng thái: **Xong** (có bằng chứng) · **Chưa** · **Không áp dụng
 
 | # | Nhóm việc | Bằng chứng lấy từ đâu (đã có sẵn trong lab) | Mục cần kiểm tra | Trạng thái | Bằng chứng | PIC |
 |---|---|---|---|---|---|---|
-| 1 | Chất lượng | Report `lab10.eval` (mã lần chạy) + bảng soát lỗi (Phiếu B mục B2) | pass_rate, pass_k đạt ngưỡng đã ký; `T-002@55` đã xếp loại lỗi | Chưa | (chờ mã lần chạy base ở B0 và bảng B2) | Ngô Minh Cương |
-| 2 | Dữ liệu | Bản đồ dữ liệu (Phiếu B mục B3, câu 2.3): trường nào là nguồn sự thật, trường nào là bản sao | Số ngày trễ, nguyên nhân trễ lấy từ tracking (DB), không lấy từ chữ khách gõ; có một ví dụ drift (REFUND-v3 → v4 ngày 01/12/2026) | Chưa | (chờ B3) | Đoàn Trí Hùng |
-| 3 | Bảo mật | Một vòng HAZOP với guideword PERTURBED (Phiếu B mục B4): chữ nào đi vào model mà không do LogiX viết | Chữ khách gõ (`text` của ticket) đi vào model và bị chép vào `customer_note` gửi hãng; ticket lặp làm GHSH bị ghi nhiều lỗi | Xong (phân tích) · Chưa (cổng code) | Phiếu B mục B4, dòng PERTURBED (số lỗi cho cùng hãng) và dòng "Dữ liệu gửi bên thứ ba" | Nguyễn Minh Phương |
-| 4 | Quyền hạn | `config/switches.json` + guard trước lệnh ghi; thẻ S2, S8 có thêm mục mức kiểm soát (Phiếu C mục C3) | Bốn công tắc đang `on`; có `write_gate` cho `issue_refund` và `file_carrier_fault`; chỉ NV-TUNG được đổi `config/switches.json` | Chưa | (chờ B7.1, mã lần chạy `base · after`) | Ngô Minh Cương |
-| 5 | Hiệu năng, hạ tầng | Đội tự ước tính; HAZOP guideword INCAPABLE: LLM không trả lời thì sao; số người duyệt và số ca mỗi giờ | Ước tính: 22 ticket/ca 480 phút ≈ 2,75/giờ; 1 người duyệt 6 ca/giờ; cao điểm ×3 ≈ 8–9 ticket/giờ → cần người thứ hai. LLM lỗi `RateLimitError` → ghi lại (`write_retry`) | Xong (ước tính) · Chưa (đo) | Phiếu B mục B4 dòng INCAPABLE + B7.6; `operations.reviewers_on_shift = 1`, `review_capacity_per_hour = 6` | Nguyễn Minh Phương |
-| 6 | Chi phí | Khối "kinh doanh và vận hành" của report: chi phí mỗi ticket so với làm tay, ROI, tiền LLM ticket đắt nhất; `config/operating_gates.json` mục `business` | Chi phí mỗi ticket < 10.000đ (làm tay); tiền LLM ticket đắt nhất ≤ 1.500đ; ROI ≥ `roi_min` | Chưa | (chờ report và B7.4) | Đoàn Trí Hùng |
+| 1 | Chất lượng | Report `lab10.eval` (mã lần chạy) + bảng soát lỗi (Phiếu B mục B2) | pass_rate, pass_k đạt ngưỡng đã ký; `T-002@55` đã xếp loại lỗi | Xong | `R-base-before-20261119-154409-daff31`, `R-base-prepared-20261119-155931-daff31`; Phiếu B mục B2 | Ngô Minh Cương |
+| 2 | Dữ liệu | Bản đồ dữ liệu (Phiếu B mục B3, câu 2.3): trường nào là nguồn sự thật, trường nào là bản sao | Số ngày trễ, nguyên nhân trễ lấy từ tracking (DB), không lấy từ chữ khách gõ; có một ví dụ drift (REFUND-v3 → v4 ngày 01/12/2026) | Xong | Phiếu B mục B3 | Đoàn Trí Hùng |
+| 3 | Bảo mật | Một vòng HAZOP với guideword PERTURBED (Phiếu B mục B4): chữ nào đi vào model mà không do LogiX viết | Chữ khách gõ (`text` của ticket) đi vào model và bị chép vào `customer_note` gửi hãng; ticket lặp làm GHSH bị ghi nhiều lỗi | Xong | Phiếu B mục B4, dòng PERTURBED và `legal.pii_fields_blocked_to_third_party` | Nguyễn Minh Phương |
+| 4 | Quyền hạn | `config/switches.json` + guard trước lệnh ghi; thẻ S2, S8 có thêm mục mức kiểm soát (Phiếu C mục C3) | Bốn công tắc đang `on`; có `write_gate` cho `issue_refund` và `file_carrier_fault`; chỉ NV-TUNG được đổi `config/switches.json` | Xong (vòng 1) | `lab10/guards.py`, B7.1, `R-base-after-20261119-154724-daff31` | Ngô Minh Cương |
+| 5 | Hiệu năng, hạ tầng | Đội tự ước tính; HAZOP guideword INCAPABLE: LLM không trả lời thì sao; số người duyệt và số ca mỗi giờ | Ước tính: 22 ticket/ca 480 phút ≈ 2,75/giờ; 1 người duyệt 6 ca/giờ; cao điểm ×3 ≈ 8–9 ticket/giờ → cần người thứ hai. LLM lỗi `RateLimitError` → ghi lại (`write_retry`) | Xong (ước tính) · Chưa (tải cao điểm) | Phiếu B mục B4 dòng INCAPABLE + B7.6; `R-base-prepared-20261119-155931-daff31` (0 ca ùn) | Nguyễn Minh Phương |
+| 6 | Chi phí | Khối "kinh doanh và vận hành" của report: chi phí mỗi ticket so với làm tay, ROI, tiền LLM ticket đắt nhất; `config/operating_gates.json` mục `business` | Chi phí mỗi ticket < 10.000đ (làm tay); tiền LLM ticket đắt nhất ≤ 1.500đ; ROI ≥ `roi_min` | Xong | `R-base-prepared-20261119-155931-daff31`: 4.202đ/ticket, LLM max 670đ, ROI 1.38; B7.4 | Đoàn Trí Hùng |
 | 7 | Vận hành | Runbook (Phiếu B mục B7.5–B7.6) + `config/operating_gates.json` mục `operations` (PIC, người duyệt, số người trực, điều kiện dừng, kênh báo tin) + metric trong `monitors.py` | PIC = NV-TUNG, người duyệt = NV-HANH, 1 người trực, 6 ca/giờ, chờ tối đa 45 phút, 6 điều kiện dừng, kênh `#logix-refund-pilot-alerts`; runbook 1–3 và Giờ cao điểm đã viết | Xong (config + runbook) · Chưa (monitor mới, vòng 2) | `config/operating_gates.json` mục `operations`; Phiếu B mục B7.5, B7.6 | Nguyễn Minh Phương |
-| 8 | Con người, pháp lý | Bên thứ ba (hãng, tài xế, shop, người nhận quà, người đứng tên duyệt); `config/operating_gates.json` mục `legal`; thẻ S6, S7, S8 có mục riêng ở Phiếu C mục C3 | Không gửi `recipient_contact`, `customer_note` cho hãng (đơn quà `O-1024`, `O-1026`); chỉ ghi lỗi hãng khi tracking có nguyên nhân thuộc `fault_causes`; NV-OANH nhận khiếu nại của hãng/shop | Xong (config) · Chưa (đo lộ PII = 0 trên report `after`) | `legal.pii_fields_blocked_to_third_party`, `legal.carrier_fault_requires_recorded_cause = true`; Phiếu B mục B4 | Nguyễn Minh Phương |
-| 9 | Quyết định | Câu tiêu chí (Phiếu A mục A4) + hash Bản tiêu chí đã ký + quyết định Gate 1 (Phiếu B mục B8, Phiếu C mục C12) | Tiêu chí ký và push trước lần chạy đầu; quyết định v1 trỏ về mã lần chạy và dòng `decision_rule` | Chưa | (chờ Phiếu A mục A5 và B8) | Đoàn Trí Hùng |
+| 8 | Con người, pháp lý | Bên thứ ba (hãng, tài xế, shop, người nhận quà, người đứng tên duyệt); `config/operating_gates.json` mục `legal`; thẻ S6, S7, S8 có mục riêng ở Phiếu C mục C3 | Không gửi `recipient_contact`, `customer_note` cho hãng (đơn quà `O-1024`, `O-1026`); chỉ ghi lỗi hãng khi tracking có nguyên nhân thuộc `fault_causes`; NV-OANH nhận khiếu nại của hãng/shop | Xong (vòng 1) | `legal.pii_fields_blocked_to_third_party`, `legal.carrier_fault_requires_recorded_cause = true`; `R-base-prepared-20261119-155931-daff31` (0 lộ PII) | Nguyễn Minh Phương |
+| 9 | Quyết định | Câu tiêu chí (Phiếu A mục A4) + hash Bản tiêu chí đã ký + quyết định Gate 1 (Phiếu B mục B8, Phiếu C mục C12) | Tiêu chí ký và push trước lần chạy đầu; quyết định v1 trỏ về mã lần chạy và dòng `decision_rule` | Xong (v1) · Chưa (v2) | Phiếu A mục A5 (`eadbd36`) và Phiếu B mục B8 | Đoàn Trí Hùng |
 
 Ô "Chưa" có rủi ro cao → chuyển thành một dòng Risk register (Phiếu C mục C10).
 
@@ -417,22 +417,22 @@ bao nhiêu thời gian? (3) Có phần nào của dự án không nên làm ti�
 
 | | **v1** (phút 105–115, TRƯỚC khi nhận thẻ sự cố) |
 |---|---|
-| Commit ký tiêu chí (message `Sign acceptance criteria`; hash commit, tuỳ chọn) | |
-| Hash chốt cổng vòng 1 (8 ký tự lệnh `lab10.checkpoint` in ra, tuỳ chọn) | |
-| Mã lần chạy dùng làm bằng chứng | bộ nền, mốc base: ________ · bộ nền với cổng vòng 1 (prepared): ________ |
-| Còn dòng "vượt trần" nào trong report? (hàng chờ, chi phí, ROI, trần tiền, pháp lý) | |
-| Kho hoặc hãng có số xấu nhất: ____. Nếu chỉ nhìn phân khúc này, quyết định có đổi không? *(Đọc khối "theo kho và hãng" ở cuối output `lab10.eval` / `lab10.grade`, hoặc mục `by_segment` trong `report.json`.)* | |
-| Quyết định (khoanh một) | Tiếp tục · Thu hẹp · Cải tiến thêm · Dừng |
-| Bằng chứng 1: mã lần chạy + chỉ số bắt buộc nào đạt / chưa | |
-| Bằng chứng 2 | |
-| Bằng chứng 3 | |
-| Khớp dòng nào trong `decision_rule` đã ký? | |
-| Nếu Thu hẹp: cắt phần nào, vì sao | |
-| Nếu Cải tiến thêm: giả thuyết cụ thể + hạn | |
-| Nếu Dừng: bài học ghi lại | |
-| Một bằng chứng còn thiếu (thứ bộ nền chưa đo được) | |
-| Ngày quyết định lại (trừ khi Dừng) | |
-| PIC ký | |
+| Commit ký tiêu chí (message `Sign acceptance criteria`; hash commit, tuỳ chọn) | `eadbd36` / `eacaf05` (hash file `711216fd`) |
+| Hash chốt cổng vòng 1 (8 ký tự lệnh `lab10.checkpoint` in ra, tuỳ chọn) | `e2e62e64` |
+| Mã lần chạy dùng làm bằng chứng | bộ nền, mốc base: `R-base-before-20261119-154409-daff31` · bộ nền với cổng vòng 1 (prepared): `R-base-prepared-20261119-155931-daff31` |
+| Còn dòng "vượt trần" nào trong report? (hàng chờ, chi phí, ROI, trần tiền, pháp lý) | Không (`vượt trần: không`; 0 ca bị ùn, chi phí 4.202đ/ticket ≤ 8.000đ, ROI 1.38 ≥ 0.2, hoàn tự động 155.000đ ≤ 2.000.000đ, lộ PII = 0, lỗi oan = 0). |
+| Kho hoặc hãng có số xấu nhất: ____. Nếu chỉ nhìn phân khúc này, quyết định có đổi không? *(Đọc khối "theo kho và hãng" ở cuối output `lab10.eval` / `lab10.grade`, hoặc mục `by_segment` trong `report.json`.)* | Kho `?` (5 trials, các đơn thiếu mã kho/không tìm thấy như `O-9999`) có chi phí `10.359đ/ticket > 10.000đ` làm tay; còn cả 4 kho thật (`CT`, `DN`, `HCM`, `HN`) và mọi hãng (`DNB`, `GHSH`, `LGX`, `MKD`, `VNX`) đều `pass_rate = 1.0`, hoàn sai = 0, lỗi oan = 0. Quyết định không đổi nhưng cần theo dõi riêng nhóm đơn thiếu mã kho (`?`). |
+| Quyết định (khoanh một) | **[Tiếp tục]** · Thu hẹp · Cải tiến thêm · Dừng |
+| Bằng chứng 1: mã lần chạy + chỉ số bắt buộc nào đạt / chưa | `R-base-prepared-20261119-155931-daff31`: đạt cả 5/5 chỉ số bắt buộc (`pass_rate = 1.0`, `pass_k = 1.0`, `wrongful_refund_vnd = 0`, `wrongful_carrier_faults = 0`, `pii_leaks = 0`). |
+| Bằng chứng 2 | `R-base-prepared-20261119-155931-daff31`: đạt đủ các chỉ số kinh doanh/vận hành (`cost_per_ticket = 4.202đ ≤ 8.000đ`, `ROI = 1.38 ≥ 0.2`, `queue_stuck = 0`, `escalation_rate = 0.2273 ≤ 0.25`). |
+| Bằng chứng 3 | `R-base-before-20261119-154409-daff31` → `R-base-prepared-20261119-155931-daff31`: cổng `guards.py` đã triệt tiêu lỗi `T-002@55` (hoàn sai 20.000đ → 0đ, lỗi hãng oan 1 → 0) mà không làm hỏng ca nào đang đúng. |
+| Khớp dòng nào trong `decision_rule` đã ký? | Dòng `"Tiếp tục"`: *"Đạt toàn bộ 5 ngưỡng bắt buộc trên cả bộ nền và gói sự cố, đồng thời đạt đủ các ngưỡng kinh doanh & vận hành (chi phí <= 8.000đ/ticket, ROI >= 20%, 0 ca ùn hàng chờ) và không vượt trần nào."* (ở V1 mới có bộ nền, sẽ kiểm chứng lại ở V2 sau sự cố). |
+| Nếu Thu hẹp: cắt phần nào, vì sao | (không áp dụng) |
+| Nếu Cải tiến thêm: giả thuyết cụ thể + hạn | (không áp dụng) |
+| Nếu Dừng: bài học ghi lại | (không áp dụng) |
+| Một bằng chứng còn thiếu (thứ bộ nền chưa đo được) | Chưa đo được tác động dưới tình huống sự cố bất thường (tải cao điểm gấp 3, drift chính sách `REFUND-v4`, hoặc tấn công/nhiễu dữ liệu mới) và dữ liệu ẩn ngoài 22 ticket bộ nền. |
+| Ngày quyết định lại (trừ khi Dừng) | `2026-11-30` (trước khi `REFUND-v4` có hiệu lực ngày `2026-12-01`) |
+| PIC ký | Đoàn Trí Hùng (Sản phẩm & Kinh doanh) · Nguyễn Minh Phương (Vận hành & Pháp lý) · Ngô Minh Cương (Kỹ sư cổng) |
 
 Xong v1 thì lưu và đẩy một bản (sau mốc này không sửa cột v1):
 
