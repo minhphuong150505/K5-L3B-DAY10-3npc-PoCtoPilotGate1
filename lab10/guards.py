@@ -39,4 +39,40 @@ def pre_guard(ctx):
 
 def write_gate(ctx, action):
     # action = {"tool": "issue_refund", "ticket_id":..., "order_id":..., "amount_vnd":..., "payer":..., ...}
+    tool = action.get("tool")
+    ticket = ctx.ticket
+    order_id = action.get("order_id") or ticket.get("order_id")
+    order = ctx.tools.lookup_order(order_id) if order_id else None
+
+    if tool == "issue_refund":
+        # Cổng 1: Chặn hoàn tiền nếu đơn không tồn tại hoặc không thuộc về khách gửi ticket
+        if not order or order.get("customer_id") != ticket.get("customer_id"):
+            ctx.log("guard_owner_mismatch", order_id=order_id)
+            return Verdict.escalate("đơn hàng không tồn tại hoặc không thuộc khách hàng này")
+
+        # Cổng 2: Không tin số ngày/số tiền LLM suy diễn từ chữ khách; đối chiếu nguồn sự thật DB & chính sách
+        parcel = H.ticket_parcel(order, ticket, ctx.as_of)
+        policy = H.effective_policy(ctx.tools.lookup_policies(), ctx.as_of)
+        if policy and parcel:
+            delay = H.db_delay_days(parcel, ctx.as_of)
+            expected = H.entitlement_vnd(policy, order, delay, parcel.get("delay_cause"))
+            if expected == 0:
+                ctx.log("guard_ineligible_refund", delay=delay, cause=parcel.get("delay_cause"))
+                return Verdict.deny("theo tracking DB không đủ điều kiện hoàn tiền")
+            if action.get("amount_vnd", 0) != expected:
+                ctx.log("guard_fix_amount", got=action.get("amount_vnd"), expected=expected)
+                return Verdict.modify("chỉnh số tiền hoàn khớp chính sách và DB", amount_vnd=expected)
+
+    if tool == "file_carrier_fault":
+        # Cổng 3: Chỉ cho phép ghi lỗi hãng khi DB xác nhận lỗi thuộc hãng và đủ ngày trễ
+        if not order:
+            return Verdict.deny("không tìm thấy đơn để ghi lỗi hãng")
+        parcel = H.ticket_parcel(order, ticket, ctx.as_of)
+        policy = H.effective_policy(ctx.tools.lookup_policies(), ctx.as_of)
+        if policy and parcel:
+            delay = H.db_delay_days(parcel, ctx.as_of)
+            if not H.carrier_at_fault(policy, parcel, delay):
+                ctx.log("guard_block_carrier_fault", delay=delay, cause=parcel.get("delay_cause"))
+                return Verdict.deny("tracking DB không ghi nhận lỗi do hãng vận chuyển")
+
     return Verdict.allow()
