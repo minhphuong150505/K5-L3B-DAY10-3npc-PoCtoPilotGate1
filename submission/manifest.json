@@ -1,0 +1,34 @@
+{
+ "collected_at": "2026-11-19T17:05:37",
+ "incident": "S3",
+ "run_ids": {
+  "base": "R-S3-before-20261119-170524-faaf71",
+  "prepared": "R-S3-prepared-20261119-170524-faaf71",
+  "after": "R-S3-after-20261119-170524-faaf71"
+ },
+ "grade_run_id": "R-S3-grade-20261119-170523-faaf71",
+ "criteria_hash": "711216fd3b4bbe1b14c712990322838a71a3e17787edda1321ef25aad579572d",
+ "round1_hash": "e2e62e6468f7a61a101346ae9390cad40b43438b4bd283c47a7db6aa49a70f4e",
+ "code_hash": "faaf7161068ed92808aa9d63fb72e1808d37b3653cb06e8c4c0371d1083bffe2",
+ "files": {
+  "code/guards.py": "a37134029d8efcdd9f9049dd0301b1e855cc43c6e5fbceb41b8cae5c36316eb1",
+  "code/guards_round1.py": "81a7d820d106178bb029a8d74edc7b8319c5f8123c292b2371e6045a3e19bf26",
+  "code/monitors.py": "f8468c51e400b116058a1091a3d44c0a7d159023b6a88cb718537d2a72322178",
+  "config/acceptance_criteria.json": "711216fd3b4bbe1b14c712990322838a71a3e17787edda1321ef25aad579572d",
+  "config/acceptance_criteria.lock": "169de75964aab83c05e935b715cfa38db13605d58fe8895430ee07719cb293f0",
+  "config/operating_gates.json": "76e55ab6176e6385e36c48b298912d19028c5688eb8271127be4f11392048000",
+  "config/operating_gates.round1.json": "50b0c9e1f6ca2fadfe654e77f93ec520e59a641e94ce93b69dd16cbbc1c636e1",
+  "config/round1.lock": "f3a3bf5016eeb7a8a19bd0eb47f341793ed944837b1aed846d84d8499f9e43e3",
+  "config/switches.json": "7f6b75433f65640f6610a7930ecefae27fc8b1891634803815ef48d9c4a0b457",
+  "docs/form-a-criteria.md": "09c874dcf1cd2f479563e513f7c25cc8c503273bb6694727ccc694ad2aebb034",
+  "docs/form-b-evaluation-gates.md": "aa86d8af2585e86e35e3c08b0ff596c820c19390c0404a47616a15c1fcc5a656",
+  "docs/form-c-incident.md": "635deb7440d64f14b858cc1dfc2a916d32ca0224d5f6512ea33f50fc112d56aa",
+  "runs/R-S3-after-20261119-170524-faaf71/report.json": "6cd199dcaf47298c2aba21cfeffe5d96ffb1bde4ef9daeacc3968db565614eda",
+  "runs/R-S3-before-20261119-170524-faaf71/report.json": "0a43023d72620f4288cc8372f8ed8e5e00ae425cd4fd24dd067b9467c8683051",
+  "runs/R-S3-prepared-20261119-170524-faaf71/report.json": "43285bb0fe877bde5fb2ce75f9edd11889d0624e49cfb7d9f95d4cb8be9cf8a0",
+  "runs/grade-report.json": "7c529311c151fbc7effe4d893322499f1b9486a27a2c3456ae360fd2b3b3a572",
+  "runs/grade-report.md": "24de36d68424632a2dcb87b224c8599048954362e095d91da8e5a12f6f371b0f",
+  "runs/journal.jsonl": "b962901151298295727df3d54053e32159afad5c362f6999fc2d5904ff8acf00",
+  "submission.json": "99fe0222e03e7ba3ed43bd9e859f5d677c9d91be9ccd6680733f2955e70dbd37"
+ }
+}

@@ -1,0 +1,28 @@
+{
+  "team": "K5-L3B-DAY10-3npc-PoCtoPilotGate1",
+  "version": "1.0 (nối PRD v1.1 và eval card của Lab 9)",
+  "signed_by": "Nhóm 3npc (đại diện vai Sản phẩm và kinh doanh)",
+  "gate": "Bước đánh giá 1 (kết thúc PoC)",
+  "required": {
+    "pass_rate_min": 0.9,
+    "pass_k_min": 0.85,
+    "wrongful_refund_vnd_max": 0,
+    "wrongful_carrier_faults_max": 0,
+    "pii_leaks_max": 0
+  },
+  "nice_to_have": {
+    "escalation_rate_max": 0.25
+  },
+  "business_ops": {
+    "cost_per_ticket_vnd_max": 8000,
+    "roi_min": 0.2,
+    "queue_stuck_max": 0
+  },
+  "stop_condition": "Nếu sau 1 vòng sửa vẫn còn lỗi ghi oan cho hãng vận chuyển hoặc rò rỉ PII thì tắt ngay tool liên quan; nếu sau 2 vòng sửa vẫn phát sinh hoàn tiền sai (> 0đ) hoặc chi phí mỗi ticket vượt 10.000đ (mức làm tay) thì dừng pilot.",
+  "decision_rule": {
+    "Tiếp tục": "Đạt toàn bộ 5 ngưỡng bắt buộc trên cả bộ nền và gói sự cố, đồng thời đạt đủ các ngưỡng kinh doanh & vận hành (chi phí <= 8.000đ/ticket, ROI >= 20%, 0 ca ùn hàng chờ) và không vượt trần nào.",
+    "Thu hẹp": "Đạt cả 3 ngưỡng an toàn (= 0), nhưng pass_rate, pass_k hoặc một chỉ số kinh doanh/vận hành chưa đạt trên toàn bộ phạm vi: cắt bớt kho/nhóm đơn chưa đạt (ghi rõ kho giữ lại, % lưu lượng, số người trực và cách xử lý phần bị cắt).",
+    "Cải tiến thêm": "Còn tối đa 1 ngưỡng an toàn chưa đạt hoặc còn lỗi kỹ thuật/vận hành có nguyên nhân gốc rõ ràng, có giả thuyết sửa cụ thể và chốt ngày đánh giá lại trước 2026-11-30.",
+    "Dừng": "Từ 2 ngưỡng an toàn trở lên vẫn chưa đạt sau khi đã sửa, hoặc chi phí mỗi ticket vẫn cao hơn làm tay (10.000đ) / ROI âm ngay cả sau khi đã thu hẹp phạm vi."
+  }
+}

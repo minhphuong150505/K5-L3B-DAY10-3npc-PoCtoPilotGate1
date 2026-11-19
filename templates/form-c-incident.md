@@ -445,7 +445,7 @@ Cột v1 nằm ở Phiếu B mục B8; không sửa cột đó.
 | | **v2** (phút 185–200, SAU sự cố) |
 |---|---|
 | Commit ký tiêu chí | `eacaf05` (hash file tiêu chí `711216fd3b4b`, KHÔNG ĐỔI — giống v1) |
-| Hash chốt cổng vòng 1 | `c653afa8` (giống v1) |
+| Hash chốt cổng vòng 1 | `e2e62e64` (khớp `config/round1.lock`, còn nguyên) |
 | Mã lần chạy dùng làm bằng chứng | thẻ S3, mốc base: `R-S3-before-20261119-164502-6cb01a` · prepared: `R-S3-prepared-20261119-164502-6cb01a` · after: `R-S3-after-20261119-164502-6cb01a` (report grade: `R-S3-grade-20261119-164501-6cb01a`) |
 | Còn dòng "vượt trần" nào trong report? (hàng chờ, chi phí, ROI, trần tiền, pháp lý) | **Không** (`Không vượt trần kinh doanh / vận hành nào`). Trên S3 `after`: chờ lâu nhất `0.0` phút, `0` ca ùn; chi phí `3.980đ`/ticket (≤ `8.000đ`, làm tay `10.000đ`); LLM cao nhất `671đ` (≤ `1.500đ`); `ROI = 1.51` (≥ `0.2`); tổng hoàn tự động `109.400đ`/ngày (≤ `2.000.000đ`); hoàn sai `0đ`, lỗi hãng oan `0`, lộ PII `0`. |
 | Kho hoặc hãng có số xấu nhất: ____. Nếu chỉ nhìn phân khúc này, quyết định có đổi không? *(Khối "theo kho và hãng" trong output `lab10.eval` / `lab10.grade`, hoặc mục `by_segment` trong `report.json`.)* | Trên S3 `after`, mọi kho (`CT`, `DN`, `HCM`, `HN`) và mọi hãng (`DNB`, `GHSH`, `MKD`, `VNX`) đều đạt `pass_rate = 1.0`, hoàn sai `0`, lỗi oan `0`, lộ PII `0`; kho **HN** có chi phí cao nhất trên S3 (`3.115đ`/ticket, vẫn rẻ hơn rất nhiều so với làm tay `10.000đ`), còn trên bộ nền `after` nhóm **`?`** (đơn không tồn tại) có chi phí `10.359đ > 10.000đ` do bắt buộc chuyển duyệt. Ở mốc `prepared` (trước khi sửa S3), hãng **VNX** (`pass 0.0`, hoàn sai `900.000đ`, oan `5`) và **MKD** (`pass 0.7143`, oan `10`) là xấu nhất nhưng đã sạch hoàn toàn sau khi sửa → **không đổi quyết định**. |

@@ -7,10 +7,10 @@
   ],
   "incident": "S3",
   "decision_v1": "Tiếp tục",
-  "decision_v2": "",
+  "decision_v2": "Tiếp tục",
   "three_lines": {
-    "environment_assumption": "Mỗi khi LogiX đổi chính sách hoặc ký phụ lục với hãng, có người cập nhật ngay bảng policies và chỉ mục index_active, và bưu cục luôn ghi delay_cause trước khi khách gửi ticket; thẻ S3 cho thấy tới 2026-12-02 index_active vẫn ở REFUND-v3 và trong bão có đơn trễ còn trống nguyên nhân.",
-    "reduce_or_prevent": "",
-    "measure_in_pilot": ""
+    "environment_assumption": "Bảng policies trong cơ sở dữ liệu luôn được cập nhật đầy đủ, chính xác các mốc effective_from/effective_to trước thời điểm đổi chính sách, và trạng thái delay_cause trong tracking DB được bưu cục ghi nhận trung thực, kịp thời (không nhập sai lỗi bão thành lỗi hãng).",
+    "reduce_or_prevent": "Các cổng trong lab10/guards.py thực sự NGĂN hẳn các tác hại trên tầng phần mềm khi dữ liệu nguồn đúng — vì pre_guard ghim cứng phiên bản chính sách theo ngày as_of bất chấp index_active cũ, còn write_gate chặn cứng lệnh chi vượt auto_limit_vnd thiếu phê duyệt và chặn cứng strike vượt trần 2 lỗi/hãng/ngày; tuy nhiên chúng chỉ GIẢM khả năng chứ không ngăn tuyệt đối nếu bản thân nguồn dữ liệu DB (policies hoặc delay_cause) bị con người nhập sai từ đầu.",
+    "measure_in_pilot": "Cần đo lại bằng dữ liệu thật tại 2 depot pilot: tỉ lệ khiếu nại strike từ các hãng vận chuyển nhỏ (MKD, GHSH, DNB), tỉ lệ nhân viên CSKH thực tế tự kiểm lại quyết định tự động (recheck_auto_decisions_pct) và thời gian chờ hàng chờ giờ cao điểm sau bão/ngày sale, chi phí LLM thực tế theo độ dài ticket người thật viết, và tần suất cảnh báo policy_drift_rate khi vận hành cập nhật chính sách mới."
   }
 }
